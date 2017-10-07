@@ -6,8 +6,12 @@
     "build": "webpack --env=dev",
     "dist": "webpack --env=prod"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SOSML/SOSML-webworker.git"
+  },
   "author": "SOSML Team",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0",
   "devDependencies": {
     "@types/node": "^7.0.22",
     "ts-loader": "^2.1.0",
