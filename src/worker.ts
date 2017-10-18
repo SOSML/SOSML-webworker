@@ -141,7 +141,7 @@ class IncrementalInterpretation {
         this.debounceCallNecessary = false;
 
         this.interpreter = untypedGlobal.Interpreter;
-        this.initialState = this.interpreter.getFirstState(true);
+        this.initialState = this.interpreter.getFirstState();
     }
 
     clear() {
