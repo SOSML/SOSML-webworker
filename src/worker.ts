@@ -411,7 +411,8 @@ class IncrementalInterpretation {
             state: newState,
             marker: marker,
             error: false,
-            output: this.computeNewStateOutput(newState, baseStateId, warnings),
+            output: this.computeNewStateOutput(newState, baseStateId, warnings,
+                newCounter),
             successCounter: newCounter
         });
     }
@@ -433,7 +434,7 @@ class IncrementalInterpretation {
             state: null,
             marker: marker,
             error: true,
-            output: errorMessage,
+            output: '\\3' + errorMessage,
             successCounter: 0
         });
     }
@@ -445,7 +446,7 @@ class IncrementalInterpretation {
             state: null,
             marker: marker,
             error: true,
-            output: outputErr,
+            output: '\\3' + outputErr,
             successCounter: 0
         });
     }
@@ -491,8 +492,10 @@ class IncrementalInterpretation {
     }
 
 
-    private computeNewStateOutput(state: any, id: number, warnings: any[]) {
-        let res = this.printBasis(state, state.getDynamicChanges(id - 1),
+    private computeNewStateOutput(state: any, id: number, warnings: any[],
+                                  stateCounter: number) {
+        let startWith = (stateCounter % 2 === 0) ? '\\1' : '\\2';
+        let res = startWith + this.printBasis(state, state.getDynamicChanges(id - 1),
             state.getStaticChanges(id - 1), 0);
         let needNewline = false;
         for (let val of warnings) {
