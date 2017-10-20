@@ -495,7 +495,7 @@ class IncrementalInterpretation {
     private computeNewStateOutput(state: any, id: number, warnings: any[],
                                   stateCounter: number) {
         let startWith = (stateCounter % 2 === 0) ? '\\1' : '\\2';
-        let res = startWith + this.printBasis(state, state.getDynamicChanges(id - 1),
+        let res = this.printBasis(state, state.getDynamicChanges(id - 1),
             state.getStaticChanges(id - 1), 0);
         let needNewline = false;
         for (let val of warnings) {
@@ -504,6 +504,9 @@ class IncrementalInterpretation {
         }
         if (needNewline) {
             res += '\n';
+        }
+        if (res.trim() !== '') {
+            res = startWith + res;
         }
         return res;
     }
