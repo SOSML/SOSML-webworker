@@ -109,7 +109,7 @@ class Communication {
 }
 
 enum ErrorType {
-    OK = 0, // Interpret successfull
+    OK = 0, // Interpret successful
     INCOMPLETE, // The given partial string was incomplete SML code
     INTERPRETER, // The interpreter failed, e.g. compile error etc.
     SML // SML raised an exception
@@ -477,7 +477,7 @@ class IncrementalInterpretation {
         }
         for( let i in dynamicBasis.structureEnvironment ) {
             if( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
-                out += stsym + ' ' + istr + 'structure \\*' + i + '\\*: sig\n';
+                out += stsym + ' ' + istr + 'structure \\*' + i + '\\*= struct\n';
                 if( staticBasis ) {
                     out += this.printBasis( state, dynamicBasis.getStructure( i ),
                         staticBasis.getStructure( i ), indent + 1 );
@@ -495,19 +495,27 @@ class IncrementalInterpretation {
     private computeNewStateOutput(state: any, id: number, warnings: any[],
                                   stateCounter: number) {
         let startWith = (stateCounter % 2 === 0) ? '\\1' : '\\2';
-        let res = this.printBasis(state, state.getDynamicChanges(id - 1),
-            state.getStaticChanges(id - 1), 0);
+        let res = '';
+        let curst = state;
+        for (let i = state.id; i >= id; --i) {
+            res = this.printBasis(curst, curst.getDynamicChanges(i - 1),
+                curst.getStaticChanges(i - 1), 0) + res;
+            while (curst.id >= i) {
+                curst = curst.parent;
+            }
+        }
         let needNewline = false;
         for (let val of warnings) {
             res += this.outputEscape(val.message);
             needNewline = !val.message.endsWith('\n');
         }
+        if (res.trim() === '') {
+            res = '>\n';
+        }
         if (needNewline) {
             res += '\n';
         }
-        if (res.trim() !== '') {
-            res = startWith + res;
-        }
+        res = startWith + res;
         return res;
     }
 
