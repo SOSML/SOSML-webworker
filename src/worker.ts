@@ -511,7 +511,7 @@ class IncrementalInterpretation {
 
         for( let i in dynamicBasis.structureEnvironment ) {
             if( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
-                out += stsym + ' ' + istr + 'structure \\*' + i + '\\*= struct\n';
+                out += stsym + ' ' + istr + 'structure \\*' + i + '\\* = struct\n';
                 if( staticBasis ) {
                     out += this.printBasis( state, dynamicBasis.getStructure( i ),
                         staticBasis.getStructure( i ), indent + 1 );
