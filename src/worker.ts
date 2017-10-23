@@ -457,7 +457,7 @@ class IncrementalInterpretation {
 
     private printBasis(state: any, dynamicBasis: any, staticBasis: any, indent: number = 0) {
         let out = '';
-        let emptyst = '.';
+        let emptyst = '>';
         let stsym = indent === 0 ? '>' : emptyst;
         let istr = '';
         for( let i = 0; i < indent; ++i ) {
