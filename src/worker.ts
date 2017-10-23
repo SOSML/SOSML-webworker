@@ -457,8 +457,8 @@ class IncrementalInterpretation {
 
     private printBasis(state: any, dynamicBasis: any, staticBasis: any, indent: number = 0) {
         let out = '';
-        let stsym = indent === 0 ? '>' : ' ';
-        let emptyst = ' ';
+        let emptyst = '.';
+        let stsym = indent === 0 ? '>' : emptyst;
         let istr = '';
         for( let i = 0; i < indent; ++i ) {
             istr += '  ';
@@ -483,7 +483,8 @@ class IncrementalInterpretation {
             if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
                 if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
                     if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
-                        out += stsym + ' ' + istr + 'datatype ' + staticBasis.getType(i).type + ' = {\n'
+                        out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
+                            + '\\* = {\n'
                         for( let j of staticBasis.getType(i).constructors ) {
                             out += emptyst + '   ' + istr + this.printBinding( state,
                                 [ j, dynamicBasis.valueEnvironment[ j ],
@@ -499,9 +500,9 @@ class IncrementalInterpretation {
             if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
                 if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
                     if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
-                        out += stsym + ' ' + istr + 'type '
+                        out += stsym + ' ' + istr + 'type \\*'
                             + staticBasis.getType(i).type.parameterType + ' = '
-                            + staticBasis.getType(i).type.returnType + ';\n';
+                            + staticBasis.getType(i).type.returnType + '\\*;\n';
                     }
                 }
             }
