@@ -490,7 +490,7 @@ class IncrementalInterpretation {
                                 [ j, dynamicBasis.valueEnvironment[ j ],
                                     staticBasis.getValue( j ) ] ) + '\n';
                         }
-                        out += stsym + ' ' + istr + '};\n';
+                        out += emptyst + ' ' + istr + '};\n';
                     }
                 }
             }
