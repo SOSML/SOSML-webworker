@@ -465,16 +465,13 @@ class IncrementalInterpretation {
         }
         for( let i in dynamicBasis.valueEnvironment ) {
             if( dynamicBasis.valueEnvironment.hasOwnProperty( i ) ) {
-                if( this.getPrototypeName( dynamicBasis.valueEnvironment[ i ][ 0 ] )
-                    !== "ValueConstructor" ) {
-                    if( staticBasis ) {
-                        out += stsym + ' ' + istr + this.printBinding( state,
-                            [ i, dynamicBasis.valueEnvironment[ i ],
-                                staticBasis.getValue( i ) ] ) + '\n';
-                    } else {
-                        out += stsym + ' ' + istr + this.printBinding( state,
-                            [ i, dynamicBasis.valueEnvironment[ i ], undefined ] ) + '\n';
-                    }
+                if( staticBasis ) {
+                    out += stsym + ' ' + istr + this.printBinding( state,
+                        [ i, dynamicBasis.valueEnvironment[ i ],
+                            staticBasis.getValue( i ) ], false ) + '\n';
+                } else {
+                    out += stsym + ' ' + istr + this.printBinding( state,
+                        [ i, dynamicBasis.valueEnvironment[ i ], undefined ], false ) + '\n';
                 }
             }
         }
@@ -580,7 +577,7 @@ class IncrementalInterpretation {
         return output;
     }*/
 
-    private printBinding(state: any, bnd: [any, any[], any[] | undefined]): string {
+    private printBinding(state: any, bnd: [any, any[], any[] | undefined], acon: boolean = true): string {
         let res = '';
 
         let value = bnd[1][0];
@@ -590,7 +587,7 @@ class IncrementalInterpretation {
         }
 
         let protoName = this.getPrototypeName(value);
-        if (protoName === 'ValueConstructor') {
+        if (protoName === 'ValueConstructor' && acon) {
             res += 'con';
         } else if (protoName === 'ExceptionConstructor') {
             res += 'exn';
