@@ -457,8 +457,22 @@ class IncrementalInterpretation {
 
     private printBasis(state: any, dynamicBasis: any, staticBasis: any, indent: number = 0) {
         let out = '';
+        let fullst = '>';
         let emptyst = ' ';
-        let stsym = indent === 0 ? '>' : emptyst;
+        let cD = new Date();
+        if (cD.getMonth() === 9 && cD.getDate() >= 25) {
+            fullst = "🎃";
+        } else if (cD.getMonth() === 11 && cD.getDate() >= 24 && cD.getDate() <= 26) {
+            fullst = "🎄";
+        } else if (cD.getMonth() === 11 && cD.getDate() === 31) {
+            fullst = "🎊";
+        } else if (cD.getMonth() === 0 && cD.getDate() === 1) {
+            fullst = "🎆";
+        } else if (cD.getMonth() === 6 && cD.getDate() === 7) {
+            fullst = "🎋";
+        }
+        let stsym = indent === 0 ? fullst : emptyst;
+
         let istr = '';
         for( let i = 0; i < indent; ++i ) {
             istr += '  ';
