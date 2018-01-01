@@ -468,6 +468,10 @@ class IncrementalInterpretation {
             fullst = "🎊";
         } else if (cD.getMonth() === 0 && cD.getDate() === 1) {
             fullst = "🎆";
+        } else if (cD.getMonth() === 1 && cD.getDate() === 14) {
+            fullst = "🍫";
+        } else if (cD.getMonth() === 2 && cD.getDate() === 14) {
+            fullst = "🍫";
         } else if (cD.getMonth() === 6 && cD.getDate() === 7) {
             fullst = "🎋";
         }
