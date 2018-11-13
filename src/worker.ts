@@ -656,7 +656,7 @@ class IncrementalInterpretation {
                 res += ' \\*' + bnd[0] + ' = ' + this.outputEscape(value.toString(state)) + '\\*';
             }
         } else {
-            res += ' \\*' + bnd[0] + '\\*;';
+            res += ' \\*' + bnd[0] + '\\*';
         }
 
         if (type) {
