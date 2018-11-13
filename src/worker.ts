@@ -3,6 +3,7 @@ let interpreterSettings = {
     'allowUnicodeInStrings': false,
     'allowSuccessorML': false,
     'disableElaboration': false,
+    'disableEvaluation': false,
     'allowLongFunctionNames': false
 };
 
@@ -481,60 +482,112 @@ class IncrementalInterpretation {
         for( let i = 0; i < indent; ++i ) {
             istr += '  ';
         }
-        for( let i in dynamicBasis.valueEnvironment ) {
-            if( dynamicBasis.valueEnvironment.hasOwnProperty( i ) ) {
-                if( staticBasis ) {
+        if( dynamicBasis === undefined ) {
+            for( let i in staticBasis.valueEnvironment ) {
+                if( staticBasis.valueEnvironment.hasOwnProperty( i ) ) {
                     out += stsym + ' ' + istr + this.printBinding( state,
-                        [ i, dynamicBasis.valueEnvironment[ i ],
-                            staticBasis.getValue( i ) ], false ) + '\n';
-                } else {
-                    out += stsym + ' ' + istr + this.printBinding( state,
-                        [ i, dynamicBasis.valueEnvironment[ i ], undefined ], false ) + '\n';
+                        [ i, undefined,
+                            staticBasis.getValue( i ) ] ) + '\n';
                 }
             }
-        }
 
-        for( let i in dynamicBasis.typeEnvironment ) {
-            if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+            for( let i in staticBasis.typeEnvironment ) {
                 if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
-                        out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
-                            + '\\* = {\n'
-                        for( let j of staticBasis.getType(i).constructors ) {
-                            out += emptyst + '   ' + istr + this.printBinding( state,
-                                [ j, dynamicBasis.valueEnvironment[ j ],
-                                    staticBasis.getValue( j ) ] ) + '\n';
+                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
+                            out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
+                                + '\\* : {\n'
+                            for( let j of staticBasis.getType(i).constructors ) {
+                                out += emptyst + '   ' + istr + this.printBinding( state,
+                                    [ j, undefined, staticBasis.getValue( j ) ] ) + '\n';
+                            }
+                            out += emptyst + ' ' + istr + '};\n';
                         }
-                        out += emptyst + ' ' + istr + '};\n';
                     }
                 }
             }
-        }
 
-        for( let i in dynamicBasis.typeEnvironment ) {
-            if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+            for( let i in staticBasis.typeEnvironment ) {
                 if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
-                        out += stsym + ' ' + istr + 'type \\*'
-                            + staticBasis.getType(i).type.parameterType + ' = '
-                            + staticBasis.getType(i).type.returnType + '\\*;\n';
+                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
+                            out += stsym + ' ' + istr + 'type \\*'
+                                + staticBasis.getType(i).type.parameterType + ' = '
+                                + staticBasis.getType(i).type.returnType + '\\*;\n';
+                        }
                     }
                 }
             }
-        }
 
-
-        for( let i in dynamicBasis.structureEnvironment ) {
-            if( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
-                out += stsym + ' ' + istr + 'structure \\*' + i + '\\* = struct\n';
-                if( staticBasis ) {
-                    out += this.printBasis( state, dynamicBasis.getStructure( i ),
-                        staticBasis.getStructure( i ), indent + 1 );
-                } else {
-                    out += this.printBasis( state, dynamicBasis.getStructure( i ),
-                        undefined, indent + 1 );
+            for( let i in staticBasis.structureEnvironment ) {
+                if( staticBasis.structureEnvironment.hasOwnProperty( i ) ) {
+                    out += stsym + ' ' + istr + 'structure \\*' + i + '\\*: sig\n';
+                    if( staticBasis ) {
+                        out += this.printBasis( state, undefined,
+                            staticBasis.getStructure( i ), indent + 1 );
+                    } else {
+                        out += this.printBasis( state, undefined,
+                            undefined, indent + 1 );
+                    }
+                    out += emptyst + ' ' + istr + 'end;\n';
                 }
-                out += emptyst + ' ' + istr + 'end;\n';
+            }
+
+        } else {
+            for( let i in dynamicBasis.valueEnvironment ) {
+                if( dynamicBasis.valueEnvironment.hasOwnProperty( i ) ) {
+                    if( staticBasis ) {
+                        out += stsym + ' ' + istr + this.printBinding( state,
+                            [ i, dynamicBasis.valueEnvironment[ i ],
+                                staticBasis.getValue( i ) ], false ) + '\n';
+                    } else {
+                        out += stsym + ' ' + istr + this.printBinding( state,
+                            [ i, dynamicBasis.valueEnvironment[ i ], undefined ], false ) + '\n';
+                    }
+                }
+            }
+
+            for( let i in dynamicBasis.typeEnvironment ) {
+                if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
+                            out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
+                                + '\\* = {\n'
+                            for( let j of staticBasis.getType(i).constructors ) {
+                                out += emptyst + '   ' + istr + this.printBinding( state,
+                                    [ j, dynamicBasis.valueEnvironment[ j ],
+                                        staticBasis.getValue( j ) ] ) + '\n';
+                            }
+                            out += emptyst + ' ' + istr + '};\n';
+                        }
+                    }
+                }
+            }
+
+            for( let i in dynamicBasis.typeEnvironment ) {
+                if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
+                            out += stsym + ' ' + istr + 'type \\*'
+                                + staticBasis.getType(i).type.parameterType + ' = '
+                                + staticBasis.getType(i).type.returnType + '\\*;\n';
+                        }
+                    }
+                }
+            }
+
+            for( let i in dynamicBasis.structureEnvironment ) {
+                if( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
+                    out += stsym + ' ' + istr + 'structure \\*' + i + '\\* = struct\n';
+                    if( staticBasis ) {
+                        out += this.printBasis( state, dynamicBasis.getStructure( i ),
+                            staticBasis.getStructure( i ), indent + 1 );
+                    } else {
+                        out += this.printBasis( state, dynamicBasis.getStructure( i ),
+                            undefined, indent + 1 );
+                    }
+                    out += emptyst + ' ' + istr + 'end;\n';
+                }
             }
         }
         return out;
@@ -570,41 +623,19 @@ class IncrementalInterpretation {
         return res;
     }
 
-    /*
-    private computeNewStateOutputInternal(state: any, id: number) {
-        if ( state.id < id ) {
-            return '';
-        }
-        let output = '';
-        if ( state.parent !== undefined ) {
-            output += this.computeNewStateOutputInternal(state.parent, id);
-        }
-        if (state.dynamicBasis.valueEnvironment !== undefined) {
-            let valEnv = state.dynamicBasis.valueEnvironment;
-            for (let i in valEnv) {
-                if (valEnv.hasOwnProperty(i)) {
-                    if (state.getDynamicValue(i, false) === undefined) {
-                        continue;
-                    }
-                    output += this.printBinding(state, [i, state.getDynamicValue(i),
-                        state.getStaticValue(i)]);
-                    output += '\n';
-                }
-            }
-        }
-        return output;
-    }*/
-
-    private printBinding(state: any, bnd: [any, any[], any[] | undefined], acon: boolean = true): string {
+    private printBinding(state: any, bnd: [any, any[] | undefined, any[] | undefined], acon: boolean = true): string {
         let res = '';
 
-        let value = bnd[1][0];
+        let value: any = bnd[1];
+        if (value) {
+            value = value[0];
+        }
         let type: any = bnd[2];
         if (type) {
             type = type[0];
         }
 
-        let protoName = this.getPrototypeName(value);
+        let protoName = value ? this.getPrototypeName(value) : this.getPrototypeName(type);
         if (protoName === 'ValueConstructor' && acon) {
             res += 'con';
         } else if (protoName === 'ExceptionConstructor') {
@@ -620,7 +651,7 @@ class IncrementalInterpretation {
                 res += ' \\*' + bnd[0] + ' = ' + this.outputEscape(value.toString(state)) + '\\*';
             }
         } else {
-            return res + ' \\*' + bnd[0] + ' = undefined\\*;';
+            res += ' \\*' + bnd[0] + '\\*;';
         }
 
         if (type) {
