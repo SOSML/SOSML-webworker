@@ -381,8 +381,8 @@ class IncrementalInterpretation {
         //    return 'Line ' + position[0] + /* ' Spalte ' + position[1] + */ ': \\*' +
         //        this.getPrototypeName(error) + '\\*: ' + this.outputEscape(error.message);
         // } else {
-            return this.outputEscape(error.name) + ': \\*' +
-                this.outputEscape(error.message) + '\\*';
+            return '\\*' + this.outputEscape(error.name) + '\\*: ' +
+                this.outputEscape(error.message);
         // }
     }
 
