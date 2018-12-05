@@ -376,16 +376,17 @@ class IncrementalInterpretation {
     }
 
     private getErrorMessage(error: any, partial: string, startPos: any): string {
-        if (error.position !== undefined) {
-            let position = this.calculateErrorPos(partial, startPos, error.position);
-            return 'Line ' + position[0] + /* ' Spalte ' + position[1] + */ ': \\*' +
-                this.getPrototypeName(error) + '\\*: ' + this.outputEscape(error.message);
-        } else {
-            return this.getPrototypeName(error) + ': ' +
-                this.outputEscape(error.message);
-        }
+        // if (error.position !== undefined) {
+        //    let position = this.calculateErrorPos(partial, startPos, error.position);
+        //    return 'Line ' + position[0] + /* ' Spalte ' + position[1] + */ ': \\*' +
+        //        this.getPrototypeName(error) + '\\*: ' + this.outputEscape(error.message);
+        // } else {
+            return this.outputEscape(error.name) + ': \\*' +
+                this.outputEscape(error.message) + '\\*';
+        // }
     }
 
+        /*
     private calculateErrorPos(partial: string, startPos: any, offset: number): [number, number] {
         let pos = {line: startPos.line, ch: startPos.ch};
         for (let i = 0; i < offset; i++) {
@@ -398,7 +399,7 @@ class IncrementalInterpretation {
             }
         }
         return [pos.line + 1, pos.ch + 1];
-    }
+    } */
 
     private addSemicolon(pos: any, newState: any, marker: number, warnings: any,
                          newCounter: number) {
