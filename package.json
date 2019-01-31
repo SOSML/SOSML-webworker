@@ -1,9 +1,17 @@
 {
   "name": "sosml-webworker",
   "version": "1.0.0",
-  "description": "",
+  "description": "A webworker to run sosml-interpreter",
+  "files": [
+    "build/*.js",
+    "build/*.d.ts"
+  ],
+  "main": "build/webworker.js",
   "scripts": {
-    "build": "webpack --env=dev"
+    "build": "webpack --env=dev",
+    "version": "npm run build && git add -A",
+    "postversion": "git push && git push --tags",
+    "cilint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",

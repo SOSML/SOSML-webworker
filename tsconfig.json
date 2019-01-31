@@ -1,11 +1,14 @@
 {
     "compilerOptions": {
-        "outDir": "build/files",
+        "outDir": ".",
         "module": "commonjs",
         "target": "es6",
-        "lib": ["es6", "webworker", "scripthost"],
+        "lib": [
+            "es6",
+            "webworker",
+            "scripthost"
+        ],
         "sourceMap": true,
-        "allowJs": true,
         "moduleResolution": "node",
         "rootDir": "src",
         "forceConsistentCasingInFileNames": true,
@@ -14,7 +17,8 @@
         "noImplicitAny": true,
         "strictNullChecks": true,
         "suppressImplicitAnyIndexErrors": true,
-        "noUnusedLocals": true
+        "noUnusedLocals": true,
+        "declaration": true
     },
     "exclude": [
         "node_modules",
