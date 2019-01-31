@@ -1,3 +1,5 @@
+import { interpret, getFirstState } from 'sosml-interpreter';
+
 let untypedGlobal: any = global;
 let interpreterSettings = {
     'allowUnicodeInStrings': false,
@@ -141,8 +143,7 @@ class IncrementalInterpretation {
         this.disabled = false;
         this.debounceCallNecessary = false;
 
-        this.interpreter = untypedGlobal.Interpreter;
-        this.initialState = this.interpreter.getFirstState();
+        this.initialState = getFirstState();
     }
 
     clear() {
@@ -325,10 +326,10 @@ class IncrementalInterpretation {
         let ret: any;
         try {
             if (oldState === null) {
-                ret = this.interpreter.interpret(partial + ';', this.initialState,
+                ret = interpret(partial + ';', this.initialState,
                     interpreterSettings);
             } else {
-                ret = this.interpreter.interpret(partial + ';', oldState,
+                ret = interpret(partial + ';', oldState,
                     interpreterSettings);
             }
         } catch (e) {
@@ -480,25 +481,25 @@ class IncrementalInterpretation {
         let stsym = indent === 0 ? fullst : emptyst;
 
         let istr = '';
-        for( let i = 0; i < indent; ++i ) {
+        for ( let i = 0; i < indent; ++i ) {
             istr += '  ';
         }
-        if( dynamicBasis === undefined ) {
-            for( let i in staticBasis.valueEnvironment ) {
-                if( staticBasis.valueEnvironment.hasOwnProperty( i ) ) {
+        if ( dynamicBasis === undefined ) {
+            for ( let i in staticBasis.valueEnvironment ) {
+                if ( staticBasis.valueEnvironment.hasOwnProperty( i ) ) {
                     out += stsym + ' ' + istr + this.printBinding( state,
                         [ i, undefined,
                             staticBasis.getValue( i ) ] ) + '\n';
                 }
             }
 
-            for( let i in staticBasis.typeEnvironment ) {
-                if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                        if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
+            for ( let i in staticBasis.typeEnvironment ) {
+                if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if ( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
                             out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
-                                + '\\* : {\n'
-                            for( let j of staticBasis.getType(i).constructors ) {
+                                + '\\* : {\n';
+                            for ( let j of staticBasis.getType(i).constructors ) {
                                 out += emptyst + '   ' + istr + this.printBinding( state,
                                     [ j, undefined, staticBasis.getValue( j ) ] ) + '\n';
                             }
@@ -508,10 +509,10 @@ class IncrementalInterpretation {
                 }
             }
 
-            for( let i in staticBasis.typeEnvironment ) {
-                if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                        if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
+            for ( let i in staticBasis.typeEnvironment ) {
+                if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if ( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
                             out += stsym + ' ' + istr + 'type \\*'
                                 + staticBasis.getType(i).type.parameterType + ' = '
                                 + staticBasis.getType(i).type.returnType + '\\*;\n';
@@ -520,10 +521,10 @@ class IncrementalInterpretation {
                 }
             }
 
-            for( let i in staticBasis.structureEnvironment ) {
-                if( staticBasis.structureEnvironment.hasOwnProperty( i ) ) {
+            for ( let i in staticBasis.structureEnvironment ) {
+                if ( staticBasis.structureEnvironment.hasOwnProperty( i ) ) {
                     out += stsym + ' ' + istr + 'structure \\*' + i + '\\*: sig\n';
-                    if( staticBasis ) {
+                    if ( staticBasis ) {
                         out += this.printBasis( state, undefined,
                             staticBasis.getStructure( i ), indent + 1 );
                     } else {
@@ -535,9 +536,9 @@ class IncrementalInterpretation {
             }
 
         } else {
-            for( let i in dynamicBasis.valueEnvironment ) {
-                if( dynamicBasis.valueEnvironment.hasOwnProperty( i ) ) {
-                    if( staticBasis ) {
+            for ( let i in dynamicBasis.valueEnvironment ) {
+                if ( dynamicBasis.valueEnvironment.hasOwnProperty( i ) ) {
+                    if ( staticBasis ) {
                         out += stsym + ' ' + istr + this.printBinding( state,
                             [ i, dynamicBasis.valueEnvironment[ i ],
                                 staticBasis.getValue( i ) ], false ) + '\n';
@@ -548,13 +549,13 @@ class IncrementalInterpretation {
                 }
             }
 
-            for( let i in dynamicBasis.typeEnvironment ) {
-                if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                        if( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
+            for ( let i in dynamicBasis.typeEnvironment ) {
+                if ( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if ( this.getPrototypeName( staticBasis.getType( i ).type ) === "CustomType" ) {
                             out += stsym + ' ' + istr + 'datatype \\*' + staticBasis.getType(i).type
-                                + '\\* = {\n'
-                            for( let j of staticBasis.getType(i).constructors ) {
+                                + '\\* = {\n';
+                            for ( let j of staticBasis.getType(i).constructors ) {
                                 out += emptyst + '   ' + istr + this.printBinding( state,
                                     [ j, dynamicBasis.valueEnvironment[ j ],
                                         staticBasis.getValue( j ) ] ) + '\n';
@@ -565,10 +566,10 @@ class IncrementalInterpretation {
                 }
             }
 
-            for( let i in dynamicBasis.typeEnvironment ) {
-                if( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                    if( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
-                        if( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
+            for ( let i in dynamicBasis.typeEnvironment ) {
+                if ( dynamicBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                    if ( staticBasis.typeEnvironment.hasOwnProperty( i ) ) {
+                        if ( this.getPrototypeName( staticBasis.getType(i).type ) === "FunctionType" ) {
                             out += stsym + ' ' + istr + 'type \\*'
                                 + staticBasis.getType(i).type.parameterType + ' = '
                                 + staticBasis.getType(i).type.returnType + '\\*;\n';
@@ -577,10 +578,10 @@ class IncrementalInterpretation {
                 }
             }
 
-            for( let i in dynamicBasis.structureEnvironment ) {
-                if( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
+            for ( let i in dynamicBasis.structureEnvironment ) {
+                if ( dynamicBasis.structureEnvironment.hasOwnProperty( i ) ) {
                     out += stsym + ' ' + istr + 'structure \\*' + i + '\\* = struct\n';
-                    if( staticBasis ) {
+                    if ( staticBasis ) {
                         out += this.printBasis( state, dynamicBasis.getStructure( i ),
                             staticBasis.getStructure( i ), indent + 1 );
                     } else {
@@ -751,7 +752,6 @@ class IncrementalInterpretation {
     }
 }
 
-untypedGlobal.importScripts('/interpreter.js');
 Communication.init();
 let ii = new IncrementalInterpretation();
 ii.go();

@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "webpack --env=dev",
-    "dist": "webpack --env=prod"
+    "build": "webpack --env=dev"
   },
   "repository": {
     "type": "git",
@@ -18,5 +17,8 @@
     "tslint": "^5.3.2",
     "typescript": "2.3.4",
     "webpack": "^2.6.0"
+  },
+  "dependencies": {
+    "sosml-interpreter": "^1.1.0"
   }
 }
