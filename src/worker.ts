@@ -1,4 +1,4 @@
-import { interpret, getFirstState } from 'sosml-interpreter';
+import { interpret, getFirstState } from '@sosml/interpreter';
 
 let untypedGlobal: any = global;
 let interpreterSettings = {
