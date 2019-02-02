@@ -6,7 +6,7 @@
     "build/*.js",
     "build/*.d.ts"
   ],
-  "main": "build/new_webworker.js",
+  "main": "build/new_worker.js",
   "scripts": {
     "build": "tsc",
     "version": "npm run build && git add -A",
