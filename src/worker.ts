@@ -593,7 +593,7 @@ class IncrementalInterpretation {
 
         let needNewline = false;
         for( let i = 0; i < warnings.length; ++i ) {
-            if( warnings[ i ].position >= -1 ) {
+            if( warnings[ i ].type >= -1 ) {
                 res += this.outputEscape( warnings[ i ].message );
             } else {
                 res +=  this.outputEscape( 'Printed: ' + warnings[ i ].message );
