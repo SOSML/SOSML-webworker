@@ -594,7 +594,7 @@ class IncrementalInterpretation {
         let needNewline = false;
         for( let i = 0; i < warnings.length; ++i ) {
             if( warnings[ i ].type >= -1 ) {
-                res += this.outputEscape( warnings[ i ].message );
+                res += this.outputEscape( 'WARN: ' + warnings[ i ].message );
             } else {
                 res +=  this.outputEscape( 'Printed: ' + warnings[ i ].message );
             }
@@ -602,7 +602,7 @@ class IncrementalInterpretation {
         }
 
         if (res.trim() === '') {
-            res = '>\n';
+            res = '(no output)\n';
         }
         if (needNewline) {
             res += '\n';
