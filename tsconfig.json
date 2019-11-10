@@ -1,11 +1,10 @@
 {
     "compilerOptions": {
-        "outDir": "build/files",
+        "outDir": "build",
         "module": "commonjs",
         "target": "es6",
         "lib": ["es6", "webworker", "scripthost"],
         "sourceMap": true,
-        "allowJs": true,
         "moduleResolution": "node",
         "rootDir": "src",
         "forceConsistentCasingInFileNames": true,
