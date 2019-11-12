@@ -132,7 +132,6 @@ class IncrementalInterpretation {
     debounceCallNecessary: boolean;
     interpreter: any;
     disabled: boolean;
-    initialState: any;
 
     constructor() {
         this.semicoli = [];
@@ -142,7 +141,6 @@ class IncrementalInterpretation {
         this.debounceCallNecessary = false;
 
         this.interpreter = untypedGlobal.Interpreter;
-        this.initialState = this.interpreter.getFirstState();
     }
 
     clear() {
@@ -178,6 +176,11 @@ class IncrementalInterpretation {
         Communication.registerHandler('clear', (data: any) => {
             this.clear();
         });
+    }
+
+    private getInitialState() {
+        return this.interpreter.getFirstState(
+            this.interpreter.getAvailableModules(), interpreterSettings);
     }
 
     private doDebounce(pos: any, added: string[], removed: string[]) {
@@ -325,7 +328,7 @@ class IncrementalInterpretation {
         let ret: any;
         try {
             if (oldState === null) {
-                ret = this.interpreter.interpret(partial + ';', this.initialState,
+                ret = this.interpreter.interpret(partial + ';', this.getInitialState(),
                     interpreterSettings);
             } else {
                 ret = this.interpreter.interpret(partial + ';', oldState,
@@ -374,7 +377,7 @@ class IncrementalInterpretation {
                          newCounter: number) {
         this.semicoli.push(pos);
         let baseIndex = this.findBaseIndex(this.data.length - 1);
-        let baseStateId = this.initialState.id + 1;
+        let baseStateId = this.getInitialState().id + 1;
         if (baseIndex !== -1) {
             baseStateId = this.data[baseIndex].state.id + 1;
         }
