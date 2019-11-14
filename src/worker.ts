@@ -1,4 +1,6 @@
 let untypedGlobal: any = global;
+untypedGlobal.importScripts('/interpreter.js');
+
 let interpreterSettings = {
     'allowUnicodeInStrings': false,
     'allowSuccessorML': false,
@@ -737,7 +739,6 @@ class IncrementalInterpretation {
     }
 }
 
-untypedGlobal.importScripts('/interpreter.js');
 Communication.init();
 let ii = new IncrementalInterpretation();
 ii.go();
