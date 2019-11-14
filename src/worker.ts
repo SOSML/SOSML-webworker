@@ -6,6 +6,8 @@ let interpreterSettings = {
     'disableEvaluation': false,
     'allowLongFunctionNames': false
 };
+let initialState: any = untypedGlobal.Interpreter.getFirstState(
+            untypedGlobal.Interpreter.getAvailableModules(), interpreterSettings);
 
 class Communication {
     static handlers: any;
@@ -27,6 +29,8 @@ class Communication {
         Communication.registerHandler('settings', (settings: any) => {
             if (settings) {
                 interpreterSettings = JSON.parse(settings);
+                initialState = untypedGlobal.Interpreter.getFirstState(
+                    untypedGlobal.Interpreter.getAvailableModules(), interpreterSettings);
             }
         });
     }
@@ -178,11 +182,6 @@ class IncrementalInterpretation {
         });
     }
 
-    private getInitialState() {
-        return this.interpreter.getFirstState(
-            this.interpreter.getAvailableModules(), interpreterSettings);
-    }
-
     private doDebounce(pos: any, added: string[], removed: string[]) {
         clearTimeout(this.debounceTimeout);
         if (!this.debounceCallNecessary) {
@@ -328,7 +327,7 @@ class IncrementalInterpretation {
         let ret: any;
         try {
             if (oldState === null) {
-                ret = this.interpreter.interpret(partial + ';', this.getInitialState(),
+                ret = this.interpreter.interpret(partial + ';', initialState,
                     interpreterSettings);
             } else {
                 ret = this.interpreter.interpret(partial + ';', oldState,
@@ -377,7 +376,7 @@ class IncrementalInterpretation {
                          newCounter: number) {
         this.semicoli.push(pos);
         let baseIndex = this.findBaseIndex(this.data.length - 1);
-        let baseStateId = this.getInitialState().id + 1;
+        let baseStateId = initialState.id + 1;
         if (baseIndex !== -1) {
             baseStateId = this.data[baseIndex].state.id + 1;
         }
