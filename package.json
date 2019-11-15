@@ -1,6 +1,6 @@
 {
     "name": "@sosml/webworker",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "A webworker to run sosml-interpreter",
     "files": [
         "build/*.js",
@@ -8,16 +8,18 @@
     ],
     "main": "build/webworker.js",
     "scripts": {
-        "build": "webpack --mode=production",
+        "build": "webpack --mode=development",
+        "dist": "webpack --mode=production",
         "cilint": "tslint -c tslint.json 'src/**/*.ts'"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/SOSML/SOSML-webworker.git"
     },
-    "author": "SOSML Team",
+    "author": "The SOSML Developers",
     "license": "GPL-3.0",
     "devDependencies": {
+        "@sosml/interpreter": "^1.2.0",
         "@types/node": "^7.10.9",
         "ts-lint": "^4.5.1",
         "ts-loader": "^5.3.3",
