@@ -332,7 +332,7 @@ class IncrementalInterpretation {
                     interpreterSettings);
             }
         } catch (e) {
-            if (e.name === 'Input Incomplete') {
+            if (e instanceof Errors.IncompleteError) {
                 return {
                     state: null,
                     result: ErrorType.INCOMPLETE,
