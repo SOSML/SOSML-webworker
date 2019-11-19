@@ -3,10 +3,13 @@ import { interpret, getFirstState, getAvailableModules, State, DynamicBasis, Sta
 
 let untypedGlobal: any = global;
 let interpreterSettings = {
-    'disableElaboration': true,
-    'disableEvaluation': true
+    'allowUnicodeInStrings': false,
+    'allowSuccessorML': false,
+    'disableElaboration': false,
+    'disableEvaluation': false,
+    'allowLongFunctionNames': false
 };
-let initialState: State = getFirstState([], interpreterSettings);
+let initialState: State = getFirstState(getAvailableModules(), interpreterSettings);
 
 class Communication {
     static handlers: any;
