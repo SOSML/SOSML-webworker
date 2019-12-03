@@ -663,7 +663,7 @@ class IncrementalInterpretation {
         }
 
         if (type) {
-            return res + ': \\_' + this.outputEscape(type.toString()) + '\\_;';
+            return res + ': \\_' + this.outputEscape(type.toString(interpreterSettings)) + '\\_;';
         } else {
             return res + ': undefined;';
         }
