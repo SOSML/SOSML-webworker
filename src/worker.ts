@@ -1,11 +1,11 @@
-import { interpret, getFirstState, getAvailableModules, State,
-         Errors, InterpreterOptions, PrintOptions } from '@sosml/interpreter';
+import { interpret, getFirstState, getAvailableModules, State, Errors, PrintOptions } from '@sosml/interpreter';
 
 let untypedGlobal: any = global;
-let interpreterSettings: InterpreterOptions = {
+let interpreterSettings = {
     'allowSuccessorML': false,
     'disableElaboration': false,
     'disableEvaluation': false,
+    'showTypeVariablesAsUnicode': false
 };
 let escapeText = ((text: string) => text.replace(/\\/g, '\\\\'));
 let printOptions: PrintOptions = {
@@ -450,6 +450,8 @@ class IncrementalInterpretation {
         } else if (cD.getMonth() === 6 && cD.getDate() === 7) {
             printOptions.fullSymbol = "🎋";
         }
+
+        printOptions.showTypeVariablesAsUnicode = interpreterSettings.showTypeVariablesAsUnicode;
 
         let res = '';
         try {
