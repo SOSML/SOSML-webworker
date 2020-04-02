@@ -4,7 +4,8 @@ module.exports = {
     entry: './src/worker.ts',
     output: {
         filename: 'webworker.js',
-        path: path.resolve(__dirname, 'build')
+        path: path.resolve(__dirname, 'build'),
+        globalObject: 'this'
     },
     mode: 'development',
     module: {
