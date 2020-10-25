@@ -14,8 +14,11 @@ let printOptions: PrintOptions = {
     'escapeText': escapeText,
     'fullSymbol': '>',
     'emptySymbol': ' '
-}
+};
 let initialState: State = getFirstState(getAvailableModules(), interpreterSettings);
+let initialStateId: number = -1; // id of the initial state, before any initial extra code.
+
+let extraAfterCode: string = '';
 
 class Communication {
     static handlers: any;
@@ -34,10 +37,40 @@ class Communication {
                 }
             }
         };
-        Communication.registerHandler('settings', (settings: any) => {
+        Communication.registerHandler('settings', (settings: string | null) => {
             if (settings) {
                 interpreterSettings = JSON.parse(settings);
                 initialState = getFirstState(getAvailableModules(), interpreterSettings);
+                initialStateId = initialState.id;
+            }
+        });
+        Communication.registerHandler('initial', (initialCode: string | undefined) => {
+            if (initialCode) {
+                // Ignores any warnings / errors
+                try {
+                    initialStateId = initialState.id;
+                    initialState = interpret(initialCode, initialState, interpreterSettings).state;
+                } catch (e) {
+                    // Empty!
+                }
+            }
+        });
+        Communication.registerHandler('initialSilent', (initialCode: string | undefined) => {
+            if (initialCode) {
+                // Ignores any warnings / errors
+                try {
+                    initialState = interpret(initialCode, initialState, interpreterSettings).state;
+                    initialStateId = initialState.id;
+                } catch (e) {
+                    // Empty!
+                }
+            }
+        });
+        Communication.registerHandler('afterCode', (afterCode: string | undefined) => {
+            if (afterCode) {
+                extraAfterCode = afterCode;
+            } else {
+                extraAfterCode = '';
             }
         });
     }
@@ -243,7 +276,7 @@ class IncrementalInterpretation {
     }
 
     private reEvaluateFrom(basePos: any, baseIndex: number, anchor: number, remainingText: string) {
-        let splitByLine: string[] = remainingText.split('\n');
+        let splitByLine: string[] = (remainingText + extraAfterCode).split('\n');
         let lastPos = basePos;
         let partial = '';
         let errorEncountered = false;
@@ -379,7 +412,7 @@ class IncrementalInterpretation {
                          newCounter: number) {
         this.semicoli.push(pos);
         let baseIndex = this.findBaseIndex(this.data.length - 1);
-        let baseStateId = initialState.id + 1;
+        let baseStateId = initialStateId > -1 ? initialStateId + 1 : initialState.id + 1;
         if (baseIndex !== -1) {
             let stt = this.data[baseIndex].state;
             if (stt !== null) {
@@ -436,19 +469,21 @@ class IncrementalInterpretation {
 
         let cD = new Date();
         if (cD.getMonth() === 9 && cD.getDate() >= 25) {
-            printOptions.fullSymbol = "🎃";
+            printOptions.fullSymbol = '🎃';
         } else if (cD.getMonth() === 11 && cD.getDate() >= 24 && cD.getDate() <= 26) {
-            printOptions.fullSymbol = "🎄";
+            printOptions.fullSymbol = '🎄';
         } else if (cD.getMonth() === 11 && cD.getDate() === 31) {
-            printOptions.fullSymbol = "🎊";
+            printOptions.fullSymbol = '🎊';
         } else if (cD.getMonth() === 0 && cD.getDate() === 1) {
-            printOptions.fullSymbol = "🎆";
+            printOptions.fullSymbol = '🎍';
         } else if (cD.getMonth() === 1 && cD.getDate() === 14) {
-            printOptions.fullSymbol = "🍫";
+            printOptions.fullSymbol = '🍫';
+        } else if (cD.getMonth() === 2 && cD.getDate() === 3) {
+            printOptions.fullSymbol = '🎎';
         } else if (cD.getMonth() === 2 && cD.getDate() === 14) {
-            printOptions.fullSymbol = "🍫";
+            printOptions.fullSymbol = '🍫';
         } else if (cD.getMonth() === 6 && cD.getDate() === 7) {
-            printOptions.fullSymbol = "🎋";
+            printOptions.fullSymbol = '🎋';
         }
 
         printOptions.showTypeVariablesAsUnicode = interpreterSettings.showTypeVariablesAsUnicode;
@@ -482,8 +517,10 @@ class IncrementalInterpretation {
         }
 
         let needNewline = false;
-        for( let i = 0; i < warnings.length; ++i ) {
-            if( warnings[ i ].type >= -1 ) {
+        for (let i = 0; i < warnings.length; ++i) {
+            if (warnings[ i ].type === 0) {
+                res += escapeText( warnings[ i ].message );
+            } else if (warnings[ i ].type >= -1) {
                 res += escapeText( 'WARN: ' + warnings[ i ].message );
             } else {
                 res += escapeText( 'Printed: ' + warnings[ i ].message );

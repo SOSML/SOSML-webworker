@@ -1,6 +1,6 @@
 {
     "name": "@sosml/webworker",
-    "version": "1.2.3",
+    "version": "1.3.0",
     "description": "A webworker to run sosml-interpreter",
     "files": [
         "build/*.js",
@@ -19,12 +19,12 @@
     "author": "The SOSML Developers",
     "license": "GPL-3.0",
     "devDependencies": {
-        "@sosml/interpreter": "^1.5.1",
-        "@types/node": "^7.10.9",
+        "@sosml/interpreter": "^1.5.3",
+        "@types/node": "^7.10.14",
         "ts-loader": "^5.3.3",
         "tslint": "^5.3.2",
-        "typescript": "^3.8.3",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+        "typescript": "^3.9.7",
+        "webpack": "^4.44.2",
+        "webpack-cli": "^3.3.12"
     }
 }
