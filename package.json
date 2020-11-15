@@ -19,7 +19,7 @@
     "author": "The SOSML Developers",
     "license": "GPL-3.0",
     "devDependencies": {
-        "@sosml/interpreter": "^1.6.1",
+        "@sosml/interpreter": "^1.6.2",
         "@types/node": "^14.14.7",
         "ts-loader": "^8.0.11",
         "tslint": "^6.1.3",
