@@ -5,7 +5,8 @@ let interpreterSettings = {
     'allowSuccessorML': false,
     'disableElaboration': false,
     'disableEvaluation': false,
-    'showTypeVariablesAsUnicode': false
+    'showTypeVariablesAsUnicode': false,
+    'showUsedTimeWhenAbove': -1,
 };
 let escapeText = ((text: string) => text.replace(/\\/g, '\\\\'));
 let printOptions: PrintOptions = {
@@ -166,6 +167,7 @@ interface IncrementalStateValues {
     output: string;
     error: boolean;
     successCounter: number;
+    time: number | undefined;
 }
 
 class IncrementalInterpretation {
@@ -182,6 +184,15 @@ class IncrementalInterpretation {
 
         this.disabled = false;
         this.debounceCallNecessary = false;
+    }
+
+    private extractOutput(data: IncrementalStateValues): string {
+        let res: string = '';
+        if (data.time !== undefined && interpreterSettings.showUsedTimeWhenAbove >= 0) {
+            res += '@' + (data.time).toFixed() + '@';
+        }
+        res += data.output;
+        return res;
     }
 
     clear() {
@@ -265,7 +276,7 @@ class IncrementalInterpretation {
     private sendFinishedData(upTo: number) {
         let out = '';
         for (let i = 0; i <= upTo; i++) {
-            out += this.data[i].output;
+            out += this.extractOutput(this.data[i]);
         }
 
         Communication.sendPartialOutput(out);
@@ -317,7 +328,7 @@ class IncrementalInterpretation {
                                 className = 'eval-success-odd';
                             }
                             this.addSemicolon(semiPos, ret.state, Communication.markText(lastPos, semiPos, className),
-                                ret.warnings, ++previousCounter);
+                                ret.warnings, ++previousCounter, ret.time);
                             lastPos = this.copyPos(semiPos);
                             lastPos.ch++;
                             previousState = ret.state;
@@ -346,7 +357,7 @@ class IncrementalInterpretation {
                         }
                         // Send partial
                         if (this.data.length > 0) {
-                            let output = this.data[this.data.length - 1].output;
+                            let output = this.extractOutput(this.data[this.data.length - 1]);
                             Communication.sendPartialOutput(output);
                         }
                     }
@@ -363,6 +374,7 @@ class IncrementalInterpretation {
     private evaluate(oldState: any, partial: string): { [name: string]: any } {
         let ret: any;
         try {
+            let oldtm = performance.now();
             if (oldState === null) {
                 ret = interpret(partial + ';', initialState,
                     interpreterSettings);
@@ -370,20 +382,23 @@ class IncrementalInterpretation {
                 ret = interpret(partial + ';', oldState,
                     interpreterSettings);
             }
+            ret.time = performance.now() - oldtm;
         } catch (e) {
             if (e instanceof Errors.IncompleteError) {
                 return {
                     state: null,
                     result: ErrorType.INCOMPLETE,
                     error: e,
-                    warnings: []
+                    warnings: [],
+                    time: -1
                 };
             } else {
                 return {
                     state: null,
                     result: ErrorType.INTERPRETER,
                     error: e,
-                    warnings: []
+                    warnings: [],
+                    time: -1
                 };
             }
         }
@@ -392,14 +407,16 @@ class IncrementalInterpretation {
                 state: ret.state,
                 result: ErrorType.SML,
                 error: ret.error,
-                warnings: ret.warnings
+                warnings: ret.warnings,
+                time: ret.time
             };
         } else {
             return {
                 state: ret.state,
                 result: ErrorType.OK,
                 error: null,
-                warnings: ret.warnings
+                warnings: ret.warnings,
+                time: ret.time
             };
         }
     }
@@ -409,7 +426,7 @@ class IncrementalInterpretation {
     }
 
     private addSemicolon(pos: any, newState: State, marker: number, warnings: any,
-                         newCounter: number) {
+                         newCounter: number, time: number | undefined) {
         this.semicoli.push(pos);
         let baseIndex = this.findBaseIndex(this.data.length - 1);
         let baseStateId = initialStateId > -1 ? initialStateId + 1 : initialState.id + 1;
@@ -425,7 +442,8 @@ class IncrementalInterpretation {
             error: false,
             output: this.computeNewStateOutput(newState, baseStateId, warnings,
                 newCounter),
-            successCounter: newCounter
+            successCounter: newCounter,
+            time: time
         });
     }
 
@@ -436,7 +454,8 @@ class IncrementalInterpretation {
             marker: -1,
             error: false,
             output: '',
-            successCounter: 0
+            successCounter: 0,
+            time: undefined
         });
     }
 
@@ -447,7 +466,8 @@ class IncrementalInterpretation {
             marker: marker,
             error: true,
             output: '\\3' + errorMessage,
-            successCounter: 0
+            successCounter: 0,
+            time: undefined
         });
     }
 
@@ -459,7 +479,8 @@ class IncrementalInterpretation {
             marker: marker,
             error: true,
             output: '\\3' + outputErr,
-            successCounter: 0
+            successCounter: 0,
+            time: undefined
         });
     }
 
