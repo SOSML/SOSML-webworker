@@ -491,7 +491,9 @@ class IncrementalInterpretation {
         let cD = new Date();
         if (cD.getMonth() === 9 && cD.getDate() >= 25) {
             printOptions.fullSymbol = '🎃';
-        } else if (cD.getMonth() === 11 && cD.getDate() >= 24 && cD.getDate() <= 26) {
+        } else if (cD.getMonth() === 11 && cD.getDate() >= 24 && cD.getDate() <= 25) {
+            printOptions.fullSymbol = '🍰';
+        } else if (cD.getMonth() === 11 && cD.getDate() === 26) {
             printOptions.fullSymbol = '🎄';
         } else if (cD.getMonth() === 11 && cD.getDate() === 31) {
             printOptions.fullSymbol = '🎊';
