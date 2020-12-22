@@ -489,24 +489,26 @@ class IncrementalInterpretation {
         let startWith = (stateCounter % 2 === 0) ? '\\1' : '\\2';
 
         let cD = new Date();
-        if (cD.getMonth() === 9 && cD.getDate() >= 25) {
-            printOptions.fullSymbol = '🎃';
+        if (cD.getMonth() === 9 && cD.getDate() >= 29) {
+            printOptions.fullSymbol = '🎃'; // Halloween
         } else if (cD.getMonth() === 11 && cD.getDate() >= 24 && cD.getDate() <= 25) {
-            printOptions.fullSymbol = '🍰';
-        } else if (cD.getMonth() === 11 && cD.getDate() === 26) {
-            printOptions.fullSymbol = '🎄';
+            printOptions.fullSymbol = '🍰'; // Christmas Cake Day
         } else if (cD.getMonth() === 11 && cD.getDate() === 31) {
-            printOptions.fullSymbol = '🎊';
+            printOptions.fullSymbol = '🎊'; // New Year's Eve
         } else if (cD.getMonth() === 0 && cD.getDate() === 1) {
-            printOptions.fullSymbol = '🎍';
+            printOptions.fullSymbol = '🎍'; // New Year's Day
         } else if (cD.getMonth() === 1 && cD.getDate() === 14) {
-            printOptions.fullSymbol = '🍫';
+            printOptions.fullSymbol = '🍫'; // Valentine's Day
         } else if (cD.getMonth() === 2 && cD.getDate() === 3) {
-            printOptions.fullSymbol = '🎎';
+            printOptions.fullSymbol = '🎎'; // Hinamatsuri
         } else if (cD.getMonth() === 2 && cD.getDate() === 14) {
-            printOptions.fullSymbol = '🍫';
+            printOptions.fullSymbol = '🍫'; // White Day
+        } else if (cD.getMonth() === 4 && cD.getDate() === 28) {
+            printOptions.fullSymbol = '🥐'; // Chocolate Cornet Day (no better symbol available)
         } else if (cD.getMonth() === 6 && cD.getDate() === 7) {
-            printOptions.fullSymbol = '🎋';
+            printOptions.fullSymbol = '🎋'; // Tanabata
+        } else if (cD.getMonth() === 9 && cD.getDate() === 10) {
+            printOptions.fullSymbol = '🍥'; // Narutomaki Day
         }
 
         printOptions.showTypeVariablesAsUnicode = interpreterSettings.showTypeVariablesAsUnicode;
