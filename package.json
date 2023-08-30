@@ -14,7 +14,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/SOSML/SOSML-webworker.git"
+        "url": "git+https://github.com/SOSML/SOSML-webworker.git"
     },
     "author": "The SOSML Developers",
     "license": "GPL-3.0",
